@@ -2,7 +2,7 @@
   "name": "vector",
   "version": "1.0.0",
   "description": "An automated multi-purpose bot for Discord",
-  "main": "index.js",
+  "main": "src/vector.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/elnatoo/vector#readme",
   "dependencies": {
-    "discord.js": "^14.22.1"
+    "discord.js": "^14.22.1",
+    "dotenv": "^17.2.2"
   }
 }
