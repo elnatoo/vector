@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/elnatoo/vector/issues"
   },
-  "homepage": "https://github.com/elnatoo/vector#readme"
+  "homepage": "https://github.com/elnatoo/vector#readme",
+  "dependencies": {
+    "discord.js": "^14.22.1"
+  }
 }
