@@ -10,17 +10,20 @@ const client = new Client({
     ]
 });
 
+// Sending a signal to the console once the bot is online
 client.once('clientReady', () => {
-    console.log('V.E.C.T.O.R. is Status: ONLINE ~bzzt~');
+    console.log('V.E.C.T.O.R. is online! STATUS: ONLINE ~bzzt~');
 });
 
-// When a message is sent, VECTOR will detect it
+// Listen for any sent messages
 client.on('messageCreate', (message) => {
-    if (message.author.bot) return; // Ignore bot messages
+    if (message.author.bot) return; // Ignore bot messages = no spam
     if (message.content.toLowerCase().includes('vector')) {
         const randomIndex = Math.floor(Math.random() * replies.length);
         message.reply(replies[randomIndex]);
     }
 });
 
-client.login(process.env.BOT_TOKEN); // Securing bot token and using it to login the bot
+// Logs the bot into Discord using the token stored in the environment variables file.
+// The token is a secret key that authenticates a bot, allowing it to connect and interact with the Discord API.
+client.login(process.env.BOT_TOKEN);
