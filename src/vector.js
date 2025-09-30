@@ -32,9 +32,24 @@ client.on('messageCreate', async (message) => {
         message.react('💥');
 
         setTimeout(() => {
+            botReply.edit('Get ready to get rekt');
+        }, 2000);
+
+        setTimeout(() => {
             message.delete();
+        }, 4000);
+
+        setTimeout(() => {
+            botReply.edit('Nothing to see here, ladies and gents! Carry on. 😎');
+        }, 6000);
+
+        setTimeout(() => {
+            botReply.edit('⚠️ This message will self-destruct in T-2 seconds!');
+        }, 8000);
+
+        setTimeout(() => {
             botReply.delete();
-        }, 3000);
+        }, 10000);
     }
 });
 
