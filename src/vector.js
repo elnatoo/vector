@@ -24,6 +24,20 @@ client.on('messageCreate', (message) => {
     }
 });
 
+// Listen for any sent messages asynchronously
+client.on('messageCreate', async (message) => {
+    if (message.author.bot) return;
+    if (message.content.toLowerCase().includes('tauros')) {
+        const botReply = await message.reply('...');
+        message.react('💥');
+
+        setTimeout(() => {
+            message.delete();
+            botReply.delete();
+        }, 3000);
+    }
+});
+
 // Logs the bot into Discord using the token stored in the environment variables file.
 // The token is a secret key that authenticates a bot, allowing it to connect and interact with the Discord API.
 client.login(process.env.BOT_TOKEN);
