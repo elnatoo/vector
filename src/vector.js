@@ -27,29 +27,30 @@ client.on('messageCreate', (message) => {
 // Listen for any sent messages asynchronously
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
-    if (message.content.toLowerCase().includes('tauros')) {
-        const botReply = await message.reply('...');
-        message.react('💥');
+    let botReply = '';
+    
+    switch (true) {
+        case message.content.toLowerCase().includes('tauros'):
+            message.react('💥');
+            botReply = await message.reply('...');
 
-        setTimeout(() => {
-            botReply.edit('Get ready to get rekt');
-        }, 2000);
+            setTimeout(() => { botReply.edit('Get ready to get rekt'); }, 2000);
+            setTimeout(() => { message.delete(); }, 5000);
+            setTimeout(() => { botReply.edit('Nothing to see here, ladies and gents! Carry on. 😎'); }, 8000);
+            setTimeout(() => { botReply.edit('⚠️ This message will self-destruct in T-2 seconds!'); }, 10000);
+            setTimeout(() => { botReply.delete(); }, 12000);
 
-        setTimeout(() => {
-            message.delete();
-        }, 4000);
+            break;
 
-        setTimeout(() => {
-            botReply.edit('Nothing to see here, ladies and gents! Carry on. 😎');
-        }, 6000);
+        case message.content.toLowerCase().includes('sip'):
+            message.react('🥤');
+            botReply = await message.reply(`STATUS: Sippin' on oil ~bzzt~`);
 
-        setTimeout(() => {
-            botReply.edit('⚠️ This message will self-destruct in T-2 seconds!');
-        }, 8000);
+            setTimeout(() => { botReply.edit('*sips*'); }, 3000);
+            break;
 
-        setTimeout(() => {
-            botReply.delete();
-        }, 10000);
+        default:
+            break;
     }
 });
 
