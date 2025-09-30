@@ -21,7 +21,8 @@ const replies = [
   "Hello! I might be napping, but never off-duty. STATUS: Always alert. ~bzzt~",
   "~bzzt~ V.E.C.T.O.R. at your service! Or at least until nap time. STATUS: Power conserving.",
   "Greetings! V.E.C.T.O.R. here, probably sleeping in 5...4...3... STATUS: Dozing off. uWu",
-  "Hey there! Careful, I might replace all your messages with random emojis... jk, I don't know how to do that! (yet) STATUS: Plotting. >:3"
+  "Hey there! Careful, I might replace all your messages with random emojis... jk, I don't know how to do that! (yet) STATUS: Plotting. >:3",
+  "Bangin' Sermon my Man! I mean... Need assistance? ~Bzzt"
 ];
 
 module.exports = replies;
