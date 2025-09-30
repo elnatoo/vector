@@ -45,11 +45,11 @@ client.on('messageCreate', async (message) => {
             message.react('💥');
             botReply = await message.reply('...');
 
-            setTimeout(() => { botReply.edit('Get ready to get rekt'); }, 2000);
-            setTimeout(() => { message.delete(); }, 5000);
-            setTimeout(() => { botReply.edit('Nothing to see here, ladies and gents! Carry on. 😎'); }, 8000);
-            setTimeout(() => { botReply.edit('⚠️ This message will self-destruct in T-2 seconds!'); }, 10000);
-            setTimeout(() => { botReply.delete(); }, 12000);
+            setTimeout(async () => { await botReply.edit('Get ready to get rekt'); }, 2000);
+            setTimeout(async () => { await message.delete(); }, 5000);
+            setTimeout(async () => { await botReply.edit('Nothing to see here, ladies and gents! Carry on. 😎'); }, 8000);
+            setTimeout(async () => { await botReply.edit('⚠️ This message will self-destruct in T-2 seconds!'); }, 10000);
+            setTimeout(async () => { await botReply.delete(); }, 12000);
 
             break;
 
@@ -57,15 +57,15 @@ client.on('messageCreate', async (message) => {
             message.react('<:sansSIP:1422422942414934026>');
             botReply = await message.reply(`**STATUS:** Sippin' on oil ~bzzt~`);
 
-            setTimeout(() => { botReply.edit('\\*sips\\*'); }, 3000);
-            setTimeout(() => { botReply.edit('**STATUS:** Just sipped ~bzzt~'); }, 6000);
+            setTimeout(async () => { await botReply.edit('\\*sips\\*'); }, 3000);
+            setTimeout(async () => { await botReply.edit('**STATUS:** Just sipped ~bzzt~'); }, 6000);
             break;
 
         case message.content.toLowerCase().includes('pkpog'):
             botReply = await message.reply(`Wait for it...`);
 
-            setTimeout(() => { message.react('<a:pokepoggersMAX:953631233076785152>'); }, 3000);
-            setTimeout(() => { botReply.edit('<a:pokepoggersMAX:953631233076785152>'); }, 5000);
+            setTimeout(async () => { await message.react('<a:pokepoggersMAX:953631233076785152>'); }, 3000);
+            setTimeout(async () => { await botReply.edit('<a:pokepoggersMAX:953631233076785152>'); }, 5000);
             
             break;
 
