@@ -4,7 +4,7 @@ V.E.C.T.O.R. is a playful and interactive Discord bot designed to engage users w
 It adds personality to your server with fun responses and friendly automation.
 
 ## Features
-- Responds with randomized greetings and messages
+- Responds with randomized greetings, messages, and reactions based on message contents/triggers
 - Uses “STATUS:” tags with random activities for flavor
 - Frequently uses the "~bzzt~" sound effect in messages
 - Makes one hell of a latte! (Not really, but maybe one day)
