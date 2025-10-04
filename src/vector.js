@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 require('dotenv').config(); // Load environment variables from .env
 const replies = require('./responses/replies');
 const botAppreciationTriggers = require('./triggers/botAppreciationTriggers');
@@ -31,7 +31,18 @@ client.on('messageCreate', (message) => {
         case userMessage.includes('vector'):
             message.react('<:bzztSHINY:917575652377501736>');
             const randomIndex = Math.floor(Math.random() * replies.length);
-            message.reply(`<:bzztSHINY:917575652377501736> : ${replies[randomIndex]}`);
+
+            const responseImage = new AttachmentBuilder('src/assets/mugshots/default.png');
+            const responseEmbed = new EmbedBuilder()
+                .setDescription(`${replies[randomIndex]}`)
+                .setThumbnail('attachment://default.png');
+
+            message.channel.send({ 
+                embeds: [responseEmbed], 
+                files: [responseImage]
+            });
+
+            //message.reply(`<:bzztSHINY:917575652377501736> : ${replies[randomIndex]}`);
             break;
         default:
             break;
