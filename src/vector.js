@@ -41,10 +41,11 @@ client.on('messageCreate', async (message) => {
     const userMessage = message.content.toLowerCase();
     let botReply = '';
 
-    // Build a regex to match 't', then 'a', then 'u', then 'r', then 'o', then 's'
+    // Build a regex to match 'tauros' or 'earthquake'
     // This regex will allow for any characters between the letters
-    const taurosRegex = /t.*a.*u.*r.*o.*s/;
-    const earthquakeRegex = /e.*a.*r.*t.*h.*q.*u.*a.*k.*e/;
+    // This expression should also identify l33t-speak/accents
+    const taurosRegex = /[t7+ţțṫṯṭ][\u0300-\u036f']?.*[a4@àáâäãåāáǎ][\u0300-\u036f']?.*[uvüµùúûū][\u0300-\u036f']?.*[r2®řŕ][\u0300-\u036f']?.*[o0ø()òóôöõōőǒ][\u0300-\u036f']?.*[s5$zśšşș][\u0300-\u036f']?/i;
+    const earthquakeRegex = /[e3èéêëēėę][\u0300-\u036f']?.*[a4@àáâäãåāáǎ][\u0300-\u036f']?.*[r2řŕ][\u0300-\u036f']?.*[t7+ţțṫṯṭ][\u0300-\u036f']?.*[h#ḥĥ][\u0300-\u036f']?.*[q9ɋ][\u0300-\u036f']?.*[uµvùúûū][\u0300-\u036f']?.*[a4@àáâäãåāáǎ][\u0300-\u036f']?.*[k<ķ][\u0300-\u036f']?.*[e3èéêëēėę][\u0300-\u036f']?/i;
     
     switch (true) {
         case userMessage.includes('tauros'):
