@@ -23,26 +23,38 @@ client.once('clientReady', () => {
 client.on('messageCreate', (message) => {
     if (message.author.bot) return; // Ignore bot messages = no spam
     const userMessage = message.content.toLowerCase();
+    let responseImage = new AttachmentBuilder();
+    let responseEmbed = new EmbedBuilder();
+    const mugshotArray = ['default', 'happy', 'inspired', 'joyful', 'shouting', 'emotional'];
 
     switch(true) {
         case botAppreciationTriggers.some(trigger => userMessage.includes(trigger)):
-            message.channel.send('<:bzztSHINY:917575652377501736> : \\*blushes\\*')
-            break;
-        case userMessage.includes('vector'):
-            message.react('<:bzztSHINY:917575652377501736>');
-            const randomIndex = Math.floor(Math.random() * replies.length);
-
-            const responseImage = new AttachmentBuilder('src/assets/mugshots/default.png');
-            const responseEmbed = new EmbedBuilder()
-                .setDescription(`${replies[randomIndex]}`)
-                .setThumbnail('attachment://default.png');
+            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotArray[5]}.png`);
+            responseEmbed = new EmbedBuilder()
+                .setDescription(`Thank you! \\*blushes\\*`)
+                .setThumbnail(`attachment://${mugshotArray[5]}.png`);
 
             message.channel.send({ 
                 embeds: [responseEmbed], 
                 files: [responseImage]
             });
 
-            //message.reply(`<:bzztSHINY:917575652377501736> : ${replies[randomIndex]}`);
+            break;
+        case userMessage.includes('vector'):
+            message.react('<:bzztSHINY:917575652377501736>');
+            const randomIndex = Math.floor(Math.random() * replies.length);
+            const mugshotIndex = Math.floor(Math.random() * (mugshotArray.length - 1));
+
+            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotArray[mugshotIndex]}.png`);
+            responseEmbed = new EmbedBuilder()
+                .setDescription(`${replies[randomIndex]}`)
+                .setThumbnail(`attachment://${mugshotArray[mugshotIndex]}.png`);
+
+            message.channel.send({ 
+                embeds: [responseEmbed], 
+                files: [responseImage]
+            });
+
             break;
         default:
             break;
