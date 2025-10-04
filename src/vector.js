@@ -171,6 +171,7 @@ client.on('messageCreate', async (message) => {
         case userMessage.includes('sip'):
             message.react('<:sansSIP:1422422942414934026>');
 
+            // TO-DO: Create an array of drinks and pick one at random
             responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[12]}.png`);
             responseEmbed = new EmbedBuilder()
                 .setDescription(`**STATUS:** Sippin' on oil ~bzzt~`)
@@ -252,6 +253,8 @@ client.on('messageCreate', async (message) => {
                     files: [responseImage]
                 });
             }, 2000);
+
+            // TO-DO: Check for rick rolls, maybe return GIF
 
             setTimeout(async () => { 
                 responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[2]}.png`)
