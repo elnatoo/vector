@@ -3,6 +3,9 @@ require('dotenv').config(); // Load environment variables from .env
 const replies = require('./responses/replies');
 const botAppreciationTriggers = require('./triggers/botAppreciationTriggers');
 
+// Import functions
+const translateToLeetspeak = require('./functions/translateToLeetspeak');
+
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -86,6 +89,15 @@ client.on('messageCreate', async (message) => {
             
             break;
 
+        case userMessage.startsWith('!leet '):
+            // Remove command prefix
+            const input = message.content.slice(6); 
+            const leetspeak = translateToLeetspeak(input);
+            botReply = await message.channel.send('Can do! Translating...');
+
+            setTimeout(async () => { await botReply.edit(leetspeak); }, 3000);
+
+            break;
         default:
             break;
     }
