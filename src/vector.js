@@ -1,10 +1,18 @@
 const { Client, GatewayIntentBits, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 require('dotenv').config(); // Load environment variables from .env
+const mugshots = require('./assets/mugshots/mugshotOptions');
+
+// Import responses
 const replies = require('./responses/replies');
+
+// Import triggers
 const botAppreciationTriggers = require('./triggers/botAppreciationTriggers');
+const incidentTriggers = require('./triggers/incidentTriggers');
+const kinchromeTriggers = require('./triggers/kinchromeTriggers');
 
 // Import functions
-const translateToLeetspeak = require('./functions/translateToLeetspeak');
+const commandFunctions = require('./functions/commandFunctions');
+const replyFunctions = require('./functions/replyFunctions');
 
 const client = new Client({
     intents: [
@@ -19,89 +27,68 @@ client.once('clientReady', () => {
     console.log('V.E.C.T.O.R. is online! STATUS: ONLINE ~bzzt~');
 });
 
-// Listen for any sent messages
+//#region Responses
+// Listen for any sent messages that call on VECTOR directly
 client.on('messageCreate', (message) => {
-    if (message.author.bot || message.content.startsWith('!')) return; // Ignore bot messages + commands
+    if (message.author.bot || message.content.startsWith('!')) return; // Ignore bot messages + classic commands
     const userMessage = message.content.toLowerCase();
     let responseImage = new AttachmentBuilder();
     let responseEmbed = new EmbedBuilder();
-    const mugshotArray = ['default', 'happy', 'inspired', 'joyful', 'shouting', 'emotional'];
 
-    switch(true) {
-        case botAppreciationTriggers.some(trigger => userMessage.includes(trigger)):
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotArray[5]}.png`);
-            responseEmbed = new EmbedBuilder()
-                .setDescription(`Thank you! \\*blushes\\*`)
-                .setThumbnail(`attachment://${mugshotArray[5]}.png`);
+    if (userMessage.includes('vector') || userMessage.includes('v3ct0r')) {
+        switch(true) {
+            case botAppreciationTriggers.containsTrigger(userMessage):
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.EMOTIONAL}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`Thank you! \\*blushes\\*`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.EMOTIONAL}.png`);
 
-            message.channel.send({ 
-                embeds: [responseEmbed], 
-                files: [responseImage]
-            });
+                message.reply({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
 
-            break;
-        case userMessage.includes('vector'):
-            message.react('<:bzztSHINY:917575652377501736>');
-            const randomIndex = Math.floor(Math.random() * replies.length);
-            const mugshotIndex = Math.floor(Math.random() * (mugshotArray.length - 1));
+                break;
+            case replyFunctions.containsGreeting(userMessage):
+                message.react('<:bzztSHINY:917575652377501736>');
+                const randomIndex = Math.floor(Math.random() * replies.greetings.length);
+                const mugshotIndex = Math.floor(Math.random() * (mugshotArray.length - 1));
 
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotArray[mugshotIndex]}.png`);
-            responseEmbed = new EmbedBuilder()
-                .setDescription(`${replies[randomIndex]}`)
-                .setThumbnail(`attachment://${mugshotArray[mugshotIndex]}.png`);
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.greetingMugshots[mugshotIndex]}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`${replies.greetings[randomIndex]}`)
+                    .setThumbnail(`attachment://${mugshots.greetingMugshots[mugshotIndex]}.png`);
 
-            message.channel.send({ 
-                embeds: [responseEmbed], 
-                files: [responseImage]
-            });
+                message.channel.send({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
 
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
+        }
     }
 });
+//#endregion
 
-// Listen for any sent messages asynchronously
+//#region Async Responses
+// Listen for any sent messages asynchronously using triggers/commands
 client.on('messageCreate', async (message) => {
-    if (message.author.bot) return;
+    if (message.author.bot) return; // Ignore bot messages
     const userMessage = message.content.toLowerCase();
     let botReply = '';
     let responseImage = new AttachmentBuilder();
     let responseEmbed = new EmbedBuilder();
-
-    const mugshotOptions = [
-        'angry',      /* 0 */
-        'crying',     /* 1 */
-        'default',    /* 2 */
-        'determined', /* 3 */
-        'dizzy',      /* 4 */
-        'emotional',  /* 5 */
-        'happy',      /* 6 */
-        'inspired',   /* 7 */
-        'joyful',     /* 8 */
-        'pensive',    /* 9 */
-        'relieved',   /* 10 */
-        'sad',        /* 11 */
-        'shouting',   /* 12 */
-        'stunned',    /* 13 */
-        'surprised',  /* 14 */
-        'tinkering'   /* 15 */
-    ];
-
-    // Regex to match 'tauros' or 'earthquake'
-    // This regex will allow for any characters between the letters
-    // This expression should also identify l33t-speak/accents
-    const taurosRegex = /[t7+ţțṫṯṭ][\u0300-\u036f']?.*[a4@àáâäãåāáǎ][\u0300-\u036f']?.*[uvüµùúûū][\u0300-\u036f']?.*[r2®řŕ][\u0300-\u036f']?.*[o0ø()òóôöõōőǒ][\u0300-\u036f']?.*[s5$zśšşș][\u0300-\u036f']?/i;
-    const earthquakeRegex = /[e3èéêëēėę][\u0300-\u036f']?.*[a4@àáâäãåāáǎ][\u0300-\u036f']?.*[r2řŕ][\u0300-\u036f']?.*[t7+ţțṫṯṭ][\u0300-\u036f']?.*[h#ḥĥ][\u0300-\u036f']?.*[q9ɋ][\u0300-\u036f']?.*[uµvùúûū][\u0300-\u036f']?.*[a4@àáâäãåāáǎ][\u0300-\u036f']?.*[k<ķ][\u0300-\u036f']?.*[e3èéêëēėę][\u0300-\u036f']?/i;
     
     switch (true) {
-        case userMessage.includes('tauros'):
-        case userMessage.includes('earthquake'):
+        //#region Triggers
+        case incidentTriggers.containsTrigger(userMessage):
             message.react('🚨');
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[3]}.png`);
+            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DETERMINED}.png`);
             responseEmbed = new EmbedBuilder()
                 .setDescription('...')
-                .setThumbnail(`attachment://${mugshotOptions[3]}.png`);
+                .setThumbnail(`attachment://${mugshots.mugshotOptions.DETERMINED}.png`);
 
             botReply = await message.reply({ 
                 embeds: [responseEmbed], 
@@ -109,9 +96,9 @@ client.on('messageCreate', async (message) => {
             });
 
             setTimeout(async () => {
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[0]}.png`)
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.ANGRY}.png`)
                 responseEmbed.setDescription('Get ready to get rekt')
-                    .setThumbnail(`attachment://${mugshotOptions[0]}.png`);
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.ANGRY}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
@@ -120,9 +107,9 @@ client.on('messageCreate', async (message) => {
 
             setTimeout(async () => { 
                 await message.delete(); 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[10]}.png`)
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.RELIEVED}.png`)
                 responseEmbed.setDescription('Setting variable targetEliminated = true')
-                    .setThumbnail(`attachment://${mugshotOptions[10]}.png`);
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.RELIEVED}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
@@ -130,9 +117,9 @@ client.on('messageCreate', async (message) => {
             }, 5000);
 
             setTimeout(async () => {
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[8]}.png`)
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.JOYFUL}.png`)
                 responseEmbed.setDescription('Nothing to see here, ladies and gents! Carry on. 😎')
-                    .setThumbnail(`attachment://${mugshotOptions[8]}.png`);
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.JOYFUL}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
@@ -140,9 +127,9 @@ client.on('messageCreate', async (message) => {
             }, 8000);
 
             setTimeout(async () => {
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[2]}.png`)
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`)
                 responseEmbed.setDescription('⚠️ **This message will self-destruct in T-2 seconds!**')
-                    .setThumbnail(`attachment://${mugshotOptions[2]}.png`);
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
@@ -160,55 +147,16 @@ client.on('messageCreate', async (message) => {
             setTimeout(async () => { await botReply.delete(); }, 13550);
 
             break;
-        case userMessage.includes('tauro'):
-        case userMessage.includes('eq'):
-        case taurosRegex.test(userMessage):
-        case earthquakeRegex.test(userMessage):
+        case incidentTriggers.almostContainsTrigger(userMessage):
             message.react('🤨');
             botreply = await message.reply('https://tenor.com/view/dexter-doakes-squint-stare-suspicious-gif-14432154109786838518');
 
             break;
-        case userMessage.includes('sip'):
-            message.react('<:sansSIP:1422422942414934026>');
-
-            // TO-DO: Create an array of drinks and pick one at random
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[12]}.png`);
-            responseEmbed = new EmbedBuilder()
-                .setDescription(`**STATUS:** Sippin' on oil ~bzzt~`)
-                .setThumbnail(`attachment://${mugshotOptions[12]}.png`);
-
-            botReply = await message.channel.send({ 
-                embeds: [responseEmbed], 
-                files: [responseImage]
-            });
-
-            setTimeout(async () => { 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[9]}.png`)
-                responseEmbed.setDescription('\\*sips\\*')
-                    .setThumbnail(`attachment://${mugshotOptions[9]}.png`);
-                await botReply.edit({ 
-                    embeds: [responseEmbed], 
-                    files: [responseImage]
-                });
-            }, 3000);
-
-            setTimeout(async () => { 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[8]}.png`)
-                responseEmbed.setDescription('**STATUS:** Just sipped ~bzzt~')
-                    .setThumbnail(`attachment://${mugshotOptions[8]}.png`);
-                await botReply.edit({ 
-                    embeds: [responseEmbed], 
-                    files: [responseImage]
-                });
-            }, 6000);
-
-            break;
-        case userMessage.includes('pkpog'):
-        case userMessage.includes('pokepog'):
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[2]}.png`);
+        case kinchromeTriggers.containsTrigger(userMessage):
+            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`);
             responseEmbed = new EmbedBuilder()
                 .setDescription(`Wait for it...`)
-                .setThumbnail(`attachment://${mugshotOptions[2]}.png`);
+                .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
 
             botReply = await message.channel.send({ 
                 embeds: [responseEmbed], 
@@ -218,9 +166,9 @@ client.on('messageCreate', async (message) => {
             setTimeout(async () => { await message.react('<a:pokepoggersMAX:953631233076785152>'); }, 3000);
 
             setTimeout(async () => { 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[12]}.png`)
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.SHOUTING}.png`)
                 responseEmbed.setDescription('POKEPOGGERS! <a:pokepoggersMAX:953631233076785152>')
-                    .setThumbnail(`attachment://${mugshotOptions[12]}.png`);
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.SHOUTING}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
@@ -228,16 +176,16 @@ client.on('messageCreate', async (message) => {
             }, 5000);
             
             break;
+        //#endregion
+        //#region Commands
+        case userMessage.includes('!sip'):
+            message.react('<:sansSIP:1422422942414934026>');
 
-        case userMessage.startsWith('!leet '):
-            // Remove command prefix
-            const input = message.content.slice(6); 
-            const leetspeak = translateToLeetspeak(input);
-
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[6]}.png`);
+            // TO-DO: Create an array of drinks and pick one at random from 3 choices using buttons
+            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`);
             responseEmbed = new EmbedBuilder()
-                .setDescription(`Can do!`)
-                .setThumbnail(`attachment://${mugshotOptions[6]}.png`);
+                .setDescription(`**STATUS:** Sippin' on oil ~bzzt~`)
+                .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
 
             botReply = await message.channel.send({ 
                 embeds: [responseEmbed], 
@@ -245,21 +193,61 @@ client.on('messageCreate', async (message) => {
             });
 
             setTimeout(async () => { 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[15]}.png`)
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.PENSIVE}.png`)
+                responseEmbed.setDescription('\\*sips\\*')
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.PENSIVE}.png`);
+                await botReply.edit({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+            }, 3000);
+
+            // TO-DO: Add different reactions/responses to each drink case
+
+            setTimeout(async () => { 
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`)
+                responseEmbed.setDescription('**STATUS:** Just sipped ~bzzt~')
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.HAPPY}.png`);
+                await botReply.edit({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+            }, 6000);
+
+            break;
+        case userMessage.startsWith('!leet '):
+            message.react('✅');
+
+            // Remove command prefix
+            const input = message.content.slice(6); 
+            const leetspeak = commandFunctions.translateToLeetspeak(input);
+
+            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`);
+            responseEmbed = new EmbedBuilder()
+                .setDescription(`Can do!`)
+                .setThumbnail(`attachment://${mugshots.mugshotOptions.HAPPY}.png`);
+
+            botReply = await message.channel.send({ 
+                embeds: [responseEmbed], 
+                files: [responseImage]
+            });
+
+            setTimeout(async () => { 
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.TINKERING}.png`)
                 responseEmbed.setDescription('Translating...')
-                    .setThumbnail(`attachment://${mugshotOptions[15]}.png`);
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.TINKERING}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
                 });
             }, 2000);
 
-            // TO-DO: Check for rick rolls, maybe return GIF
+            // TO-DO: Check for rick rolls, maybe return GIF 
 
             setTimeout(async () => { 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshotOptions[2]}.png`)
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`)
                 responseEmbed.setDescription(leetspeak)
-                    .setThumbnail(`attachment://${mugshotOptions[2]}.png`);
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
@@ -267,12 +255,12 @@ client.on('messageCreate', async (message) => {
             }, 5000);
 
             break;
+        //#endregion
         default:
             break;
     }
-
-    
 });
+//#endregion
 
 // Logs the bot into Discord using the token stored in the environment variables file.
 // The token is a secret key that authenticates a bot, allowing it to connect and interact with the Discord API.

@@ -1,15 +1,15 @@
-const replies = [
+const greetings = [
   "*~bzzt~* Hello there! I'm **V.E.C.T.O.R.**",
   "Greetings from **V.E.C.T.O.R.**!",
   "Howdy! **V.E.C.T.O.R.** at your service.",
   "Hello! Ready to assist you.",
   "**STATUS**: Ready for assistance! *~bzzt~*",
-  "zzz... Did they leave yet?",
+  "zzz... **STATUS**: Actually napping.",
   "Present! *~bzzt~*",
   "*~bzzt~*",
   "I'm **V.E.C.T.O.R.**! How may I assist you?",
-  "Loading... *~bzzt~*",
-  "**STATUS**: Pretending to nap... Shhh!",
+  "Loading... STATUS: Still online *~bzzt~*",
+  "zzz... **STATUS**: Pretending to nap... Shhh!",
   "*~bzzt~* Hello! **V.E.C.T.O.R.** ready to assist. **STATUS**: Scanning your messages.",
   "Howdy! Watch out, I might glitch your screen... jk! **STATUS**: Mischief mode activated. >:)",
   "Did you hear that? Hm... must be nothing. **STATUS**: Circuits buzzing. *~bzzt~*",
@@ -23,9 +23,9 @@ const replies = [
   "Greetings! **V.E.C.T.O.R.** here, probably sleeping in 5...4...3... **STATUS**: Dozing off. uWu",
   "Hey there! Careful, I might replace all your messages with random emojis...        jk,       I don't know how to do that!        (yet) **STATUS**: Plotting. >:3",
   "Bangin' Sermon my Man! I mean... Need assistance? *~bzzt~*",
-  "Get the banana!       🍌          POTASSIUM!",
+  "Get the banana!       🍌          POTASSIUM! *~bzzt~*",
   "Hola! Soy **V.E.C.T.O.R.**! A su servicio *~bzzt~*",
-  "🍩"
+  "🍩 *~bzzt~*"
 ];
 
-module.exports = replies;
+module.exports = greetings;

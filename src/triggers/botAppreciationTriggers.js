@@ -8,7 +8,13 @@ const botAppreciationTriggers = [
     'top bot', 
     'super bot', 
     'fantastic bot', 
-    'brilliant bot'
+    'brilliant bot',
+    'marvelous bot',
+    'op bot'
 ];
 
-module.exports = botAppreciationTriggers;
+function containsTrigger(message) {
+    return botAppreciationTriggers.some(trigger => message.includes(trigger));
+}
+
+module.exports = { botAppreciationTriggers, containsTrigger };

@@ -15,4 +15,4 @@ function translateToLeetspeak(text) {
   return text.toLowerCase().split('').map(char => leetMap[char] || char).join('');
 }
 
-module.exports = translateToLeetspeak;
+module.exports = { translateToLeetspeak };
