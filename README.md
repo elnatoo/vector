@@ -7,4 +7,8 @@ It adds personality to your server with fun responses and friendly automation.
 - Responds with randomized greetings, messages, and reactions based on message contents/triggers
 - Uses “STATUS:” tags with random activities for flavor
 - Frequently uses the "~bzzt~" sound effect in messages
+- Functions and commands! (Currently only `!leet` is available. More commands coming soon!)
 - Makes one hell of a latte! (Not really, but maybe one day)
+
+## Credits
+- Original PMD-styled Magnezone portraits by HeartTheGlaceon: https://www.deviantart.com/hearttheglaceon/art/PMD-Magnezone-Portraits-1157633522
