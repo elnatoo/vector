@@ -18,12 +18,12 @@ const mugshotOptions = Object.freeze({
 });
 
 const greetingMugshots = [
-    mugshots.DEFAULT, 
-    mugshots.HAPPY, 
-    mugshots.INSPIRED, 
-    mugshots.JOYFUL,
-    mugshots.SHOUTING,
-    mugshots.EMOTIONAL
+    mugshotOptions.DEFAULT, 
+    mugshotOptions.HAPPY, 
+    mugshotOptions.INSPIRED, 
+    mugshotOptions.JOYFUL,
+    mugshotOptions.SHOUTING,
+    mugshotOptions.EMOTIONAL
 ];
 
 module.exports = { mugshotOptions, greetingMugshots };

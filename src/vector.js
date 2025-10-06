@@ -5,14 +5,15 @@ const mugshots = require('./assets/mugshots/mugshotOptions');
 // Import responses
 const replies = require('./responses/replies');
 
+// Import functions
+const helperFunctions = require('./functions/helperFunctions')
+const commandFunctions = require('./functions/commandFunctions');
+const replyFunctions = require('./functions/replyFunctions');
+
 // Import triggers
 const botAppreciationTriggers = require('./triggers/botAppreciationTriggers');
 const incidentTriggers = require('./triggers/incidentTriggers');
 const kinchromeTriggers = require('./triggers/kinchromeTriggers');
-
-// Import functions
-const commandFunctions = require('./functions/commandFunctions');
-const replyFunctions = require('./functions/replyFunctions');
 
 const client = new Client({
     intents: [
@@ -38,6 +39,7 @@ client.on('messageCreate', (message) => {
     if (userMessage.includes('vector') || userMessage.includes('v3ct0r')) {
         switch(true) {
             case botAppreciationTriggers.containsTrigger(userMessage):
+                message.react('❤️');
                 responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.EMOTIONAL}.png`);
                 responseEmbed = new EmbedBuilder()
                     .setDescription(`Thank you! \\*blushes\\*`)
@@ -52,7 +54,7 @@ client.on('messageCreate', (message) => {
             case replyFunctions.containsGreeting(userMessage):
                 message.react('<:bzztSHINY:917575652377501736>');
                 const randomIndex = Math.floor(Math.random() * replies.greetings.length);
-                const mugshotIndex = Math.floor(Math.random() * (mugshotArray.length - 1));
+                const mugshotIndex = Math.floor(Math.random() * (mugshots.greetingMugshots.length - 1));
 
                 responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.greetingMugshots[mugshotIndex]}.png`);
                 responseEmbed = new EmbedBuilder()
@@ -66,6 +68,7 @@ client.on('messageCreate', (message) => {
 
                 break;
             default:
+
                 break;
         }
     }
@@ -80,105 +83,115 @@ client.on('messageCreate', async (message) => {
     let botReply = '';
     let responseImage = new AttachmentBuilder();
     let responseEmbed = new EmbedBuilder();
+
+    let isCommandMessage = userMessage.startsWith('!');
     
-    switch (true) {
-        //#region Triggers
-        case incidentTriggers.containsTrigger(userMessage):
-            message.react('🚨');
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DETERMINED}.png`);
-            responseEmbed = new EmbedBuilder()
-                .setDescription('...')
-                .setThumbnail(`attachment://${mugshots.mugshotOptions.DETERMINED}.png`);
+    //#region Triggers
+    if (!isCommandMessage) {
+        switch (true) {
+            case incidentTriggers.containsTrigger(userMessage):
+                message.react('🚨');
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DETERMINED}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription('...')
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.DETERMINED}.png`);
 
-            botReply = await message.reply({ 
-                embeds: [responseEmbed], 
-                files: [responseImage]
-            });
-
-            setTimeout(async () => {
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.ANGRY}.png`)
-                responseEmbed.setDescription('Get ready to get rekt')
-                    .setThumbnail(`attachment://${mugshots.mugshotOptions.ANGRY}.png`);
-                await botReply.edit({ 
+                botReply = await message.reply({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
                 });
-            }, 2000);
 
-            setTimeout(async () => { 
-                await message.delete(); 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.RELIEVED}.png`)
-                responseEmbed.setDescription('Setting variable targetEliminated = true')
-                    .setThumbnail(`attachment://${mugshots.mugshotOptions.RELIEVED}.png`);
-                await botReply.edit({ 
-                    embeds: [responseEmbed], 
-                    files: [responseImage]
-                });
-            }, 5000);
+                setTimeout(async () => {
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.ANGRY}.png`)
+                    responseEmbed.setDescription('Get ready to get rekt')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.ANGRY}.png`);
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 2000);
 
-            setTimeout(async () => {
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.JOYFUL}.png`)
-                responseEmbed.setDescription('Nothing to see here, ladies and gents! Carry on. 😎')
-                    .setThumbnail(`attachment://${mugshots.mugshotOptions.JOYFUL}.png`);
-                await botReply.edit({ 
-                    embeds: [responseEmbed], 
-                    files: [responseImage]
-                });
-            }, 8000);
+                setTimeout(async () => { 
+                    await message.delete(); 
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.RELIEVED}.png`)
+                    responseEmbed.setDescription('Setting variable targetEliminated = true')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.RELIEVED}.png`);
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 5000);
 
-            setTimeout(async () => {
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`)
-                responseEmbed.setDescription('⚠️ **This message will self-destruct in T-2 seconds!**')
+                setTimeout(async () => {
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.JOYFUL}.png`)
+                    responseEmbed.setDescription('Nothing to see here, ladies and gents! Carry on. 😎')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.JOYFUL}.png`);
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 8000);
+
+                setTimeout(async () => {
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`)
+                    responseEmbed.setDescription('⚠️ **This message will self-destruct in T-2 seconds!**')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 10000);
+
+                setTimeout(async () => { 
+                    await botReply.edit({
+                        content: 'https://media.tenor.com/-pMfQcryj3cAAAAi/explosion-boom.gif', 
+                        embeds: [], 
+                        files: []
+                    }); 
+                }, 12000);
+
+                setTimeout(async () => { await botReply.delete(); }, 13550);
+
+                break;
+            case incidentTriggers.almostContainsTrigger(userMessage):
+                message.react('🤨');
+                botreply = await message.reply('https://tenor.com/view/dexter-doakes-squint-stare-suspicious-gif-14432154109786838518');
+
+                break;
+            case kinchromeTriggers.containsTrigger(userMessage):
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`Wait for it...`)
                     .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
-                await botReply.edit({ 
+
+                botReply = await message.channel.send({ 
                     embeds: [responseEmbed], 
                     files: [responseImage]
                 });
-            }, 10000);
 
-            setTimeout(async () => { 
-                await botReply.edit({
-                    content: 'https://media.tenor.com/-pMfQcryj3cAAAAi/explosion-boom.gif', 
-                    embeds: [], 
-                    files: []
-                }); 
-            }, 12000);
+                setTimeout(async () => { await message.react('<a:pokepoggersMAX:953631233076785152>'); }, 3000);
 
-            setTimeout(async () => { await botReply.delete(); }, 13550);
-
-            break;
-        case incidentTriggers.almostContainsTrigger(userMessage):
-            message.react('🤨');
-            botreply = await message.reply('https://tenor.com/view/dexter-doakes-squint-stare-suspicious-gif-14432154109786838518');
-
-            break;
-        case kinchromeTriggers.containsTrigger(userMessage):
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`);
-            responseEmbed = new EmbedBuilder()
-                .setDescription(`Wait for it...`)
-                .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
-
-            botReply = await message.channel.send({ 
-                embeds: [responseEmbed], 
-                files: [responseImage]
-            });
-
-            setTimeout(async () => { await message.react('<a:pokepoggersMAX:953631233076785152>'); }, 3000);
-
-            setTimeout(async () => { 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.SHOUTING}.png`)
-                responseEmbed.setDescription('POKEPOGGERS! <a:pokepoggersMAX:953631233076785152>')
-                    .setThumbnail(`attachment://${mugshots.mugshotOptions.SHOUTING}.png`);
-                await botReply.edit({ 
-                    embeds: [responseEmbed], 
-                    files: [responseImage]
-                });
-            }, 5000);
+                setTimeout(async () => { 
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.SHOUTING}.png`)
+                    responseEmbed.setDescription('POKEPOGGERS! <a:pokepoggersMAX:953631233076785152>')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.SHOUTING}.png`);
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 5000);
+                
+                break;
             
-            break;
-        //#endregion
-        //#region Commands
-        case userMessage.includes('!sip'):
+            default:
+                break;
+        }
+    }
+    //#endregion
+
+    //#region Commands
+    switch(true) {
+        case userMessage.startsWith('!sip'):
             message.react('<:sansSIP:1422422942414934026>');
 
             // TO-DO: Create an array of drinks and pick one at random from 3 choices using buttons
@@ -215,11 +228,44 @@ client.on('messageCreate', async (message) => {
             }, 6000);
 
             break;
-        case userMessage.startsWith('!leet '):
+        case userMessage.startsWith('!leet'):
+            // Check for empty inputs
+            if (!helperFunctions.hasInputAfterCommand(userMessage, '!leet')) {
+                message.react('❌');
+
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.STUNNED}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`Uh oh... please enter a message to translate into leetspeak. \n STATUS: Error ~bzzt~`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.STUNNED}.png`);
+
+                botReply = await message.channel.send({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+
+                break;
+            }
+
+            if (incidentTriggers.containsTrigger(userMessage)) {
+                message.react('❌');
+
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DETERMINED}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`No ~bzzt~`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.DETERMINED}.png`);
+
+                botReply = await message.channel.send({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+
+                break;
+            }
+
             message.react('✅');
 
             // Remove command prefix
-            const input = message.content.slice(6); 
+            const input = message.content.slice(5); 
             const leetspeak = commandFunctions.translateToLeetspeak(input);
 
             responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`);
@@ -246,7 +292,7 @@ client.on('messageCreate', async (message) => {
 
             setTimeout(async () => { 
                 responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`)
-                responseEmbed.setDescription(leetspeak)
+                responseEmbed.setDescription(`Here is your message in l33t5p34k: \n ${leetspeak}`)
                     .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
@@ -255,10 +301,11 @@ client.on('messageCreate', async (message) => {
             }, 5000);
 
             break;
-        //#endregion
+        
         default:
             break;
     }
+    //#endregion
 });
 //#endregion
 

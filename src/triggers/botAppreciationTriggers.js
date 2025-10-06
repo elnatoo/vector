@@ -10,7 +10,8 @@ const botAppreciationTriggers = [
     'fantastic bot', 
     'brilliant bot',
     'marvelous bot',
-    'op bot'
+    'op bot',
+    'i love you'
 ];
 
 function containsTrigger(message) {

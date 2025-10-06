@@ -23,9 +23,10 @@ const greetings = [
   "Greetings! **V.E.C.T.O.R.** here, probably sleeping in 5...4...3... **STATUS**: Dozing off. uWu",
   "Hey there! Careful, I might replace all your messages with random emojis...        jk,       I don't know how to do that!        (yet) **STATUS**: Plotting. >:3",
   "Bangin' Sermon my Man! I mean... Need assistance? *~bzzt~*",
-  "Get the banana!       🍌          POTASSIUM! *~bzzt~*",
+  // TO-DO: Maybe let's turn this into a command mini-game? 
+  // "Get the banana!       🍌          POTASSIUM! *~bzzt~*",
   "Hola! Soy **V.E.C.T.O.R.**! A su servicio *~bzzt~*",
   "🍩 *~bzzt~*"
 ];
 
-module.exports = greetings;
+module.exports = { greetings };
