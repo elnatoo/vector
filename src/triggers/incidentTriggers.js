@@ -1,3 +1,5 @@
+const helperFunctions = require('../functions/helperFunctions');
+
 const incidentTriggers = [
     'tauros', 'earthquake'
 ];
@@ -8,24 +10,48 @@ const incidentTriggers = [
 // Only passes test if the letters are in order in a message
 const taurosRegex = new RegExp(
   [
-    "[t7+ţțṫṯṭ]",      // t or variants
-    "[\\u0300-\\u036f']?.*?", // optional accent + any chars (non greedy)
-    "[a4@àáâäãåāáǎ]",  // a or variants
-    "[\\u0300-\\u036f']?.*?",
-    "[uµvüùúûū]",      // u or variants
-    "[\\u0300-\\u036f']?.*?",
-    "[r2®řŕ]",         // r or variants
-    "[\\u0300-\\u036f']?.*?",
-    "[o0ø()òóôöõōőǒ]", // o or variants
-    "[\\u0300-\\u036f']?.*?",
-    "[s5$zśšşș]"       // s or variants
+    "[t7+ţțṫṯṭ]",             // t or variants
+    "[\\u0300-\\u036f']?.{0,7}?", // up to 7 chars (non-greedy)
+    "[a4@àáâäãåāáǎ]",          // a or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[uµvüùúûū]",              // u or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[r2®řŕ]",                 // r or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[o0ø()òóôöõōőǒ]",         // o or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[s5$zśšşș]"               // s or variants
   ].join(""),
   "i"
 );
-const earthquakeRegex = /[e3èéêëēėę][\u0300-\u036f']?.*[a4@àáâäãåāáǎ][\u0300-\u036f']?.*[r2řŕ][\u0300-\u036f']?.*[t7+ţțṫṯṭ][\u0300-\u036f']?.*[h#ḥĥ][\u0300-\u036f']?.*[q9ɋ][\u0300-\u036f']?.*[uµvùúûū][\u0300-\u036f']?.*[a4@àáâäãåāáǎ][\u0300-\u036f']?.*[k<ķ][\u0300-\u036f']?.*[e3èéêëēėę][\u0300-\u036f']?/i;
+
+const earthquakeRegex = new RegExp(
+  [
+    "[e3èéêëēėę]",            // e or variants
+    "[\\u0300-\\u036f']?.{0,7}?", 
+    "[a4@àáâäãåāáǎ]",         // a or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[r2řŕ]",                 // r or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[t7+ţțṫṯṭ]",             // t or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[h#ḥĥ]",                 // h or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[q9ɋ]",                  // q or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[uµvùúûū]",              // u or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[a4@àáâäãåāáǎ]",         // a or variants (second A)
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[k<ķ]",                  // k or variants
+    "[\\u0300-\\u036f']?.{0,7}?",
+    "[e3èéêëēėę]"             // final e or variants
+  ].join(""),
+  "i"
+);
 
 function containsTrigger(message) {
-    return incidentTriggers.some(trigger => message.includes(trigger));
+    return helperFunctions.containsKeyword(message, incidentTriggers);
 }
 
 function almostContainsTrigger(message) {

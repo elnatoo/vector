@@ -1,3 +1,5 @@
+const helperFunctions = require('../functions/helperFunctions');
+
 const botAppreciationTriggers = [
     'good bot',
     'nice bot',
@@ -11,11 +13,11 @@ const botAppreciationTriggers = [
     'brilliant bot',
     'marvelous bot',
     'op bot',
-    'i love you'
+    'love you'
 ];
 
 function containsTrigger(message) {
-    return botAppreciationTriggers.some(trigger => message.includes(trigger));
+    return helperFunctions.containsKeyword(message, botAppreciationTriggers);
 }
 
 module.exports = { botAppreciationTriggers, containsTrigger };

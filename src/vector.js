@@ -67,6 +67,18 @@ client.on('messageCreate', (message) => {
                 });
 
                 break;
+            case replyFunctions.containsGoodnight(userMessage):
+                message.react('<:swabluNAP:991770194466836542>');
+
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`Have a good night, ${message.author.username}!`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.HAPPY}.png`);
+
+                message.reply({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
             default:
 
                 break;
@@ -182,7 +194,11 @@ client.on('messageCreate', async (message) => {
                 }, 5000);
                 
                 break;
-            
+            case replyFunctions.containsRickRoll(userMessage):
+                message.react('<a:rickrollgif:1424886267673448448>');
+                botreply = await message.reply('https://media.tenor.com/o656qFKDzeUAAAAM/rick-astley-never-gonna-give-you-up.gif');
+
+                break;
             default:
                 break;
         }
@@ -246,6 +262,7 @@ client.on('messageCreate', async (message) => {
                 break;
             }
 
+            // Check for trigger keywords
             if (incidentTriggers.containsTrigger(userMessage)) {
                 message.react('❌');
 
@@ -262,10 +279,11 @@ client.on('messageCreate', async (message) => {
                 break;
             }
 
+            // Approve message for translation
             message.react('✅');
 
             // Remove command prefix
-            const input = message.content.slice(5); 
+            const input = message.content.slice(5);
             const leetspeak = commandFunctions.translateToLeetspeak(input);
 
             responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`);
@@ -288,11 +306,21 @@ client.on('messageCreate', async (message) => {
                 });
             }, 2000);
 
-            // TO-DO: Check for rick rolls, maybe return GIF 
+            if (replyFunctions.containsRickRoll(userMessage)) {
+                setTimeout(async () => { 
+                    await botReply.edit({
+                        content: 'https://media.tenor.com/o656qFKDzeUAAAAM/rick-astley-never-gonna-give-you-up.gif', 
+                        embeds: [], 
+                        files: []
+                    }); 
+                }, 5000);
+
+                break;
+            }
 
             setTimeout(async () => { 
                 responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`)
-                responseEmbed.setDescription(`Here is your message in l33t5p34k: \n ${leetspeak}`)
+                responseEmbed.setDescription(`Here is your message in l33t5p34k (leetspeak): \n ${leetspeak}`)
                     .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
                 await botReply.edit({ 
                     embeds: [responseEmbed], 
@@ -301,7 +329,6 @@ client.on('messageCreate', async (message) => {
             }, 5000);
 
             break;
-        
         default:
             break;
     }

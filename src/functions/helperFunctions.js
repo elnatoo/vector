@@ -8,4 +8,8 @@ function hasInputAfterCommand(message, command) {
   return input.length > 0;
 }
 
-module.exports = { hasInputAfterCommand };
+function containsKeyword(message, keywords) {
+  return keywords.some(keyword => message.includes(keyword));
+}
+
+module.exports = { hasInputAfterCommand, containsKeyword };
