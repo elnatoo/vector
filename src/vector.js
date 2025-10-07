@@ -18,6 +18,9 @@ const kinchromeTriggers = require('./triggers/kinchromeTriggers');
 // Import other stuff
 const drinks = require('./assets/drinks');
 
+// Import functions
+const translateToLeetspeak = require('./functions/translateToLeetspeak');
+
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
