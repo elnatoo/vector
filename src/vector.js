@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, EmbedBuilder, AttachmentBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType } = require('discord.js');
 require('dotenv').config(); // Load environment variables from .env
 const mugshots = require('./assets/mugshots/mugshotOptions');
 
@@ -14,6 +14,9 @@ const replyFunctions = require('./functions/replyFunctions');
 const botAppreciationTriggers = require('./triggers/botAppreciationTriggers');
 const incidentTriggers = require('./triggers/incidentTriggers');
 const kinchromeTriggers = require('./triggers/kinchromeTriggers');
+
+// Import other stuff
+const drinks = require('./assets/drinks');
 
 const client = new Client({
     intents: [
@@ -238,38 +241,130 @@ client.on('messageCreate', async (message) => {
         case userMessage.startsWith('!sip'):
             message.react('<:sansSIP:1422422942414934026>');
 
-            // TO-DO: Create an array of drinks and pick one at random from 3 choices using buttons
-            responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`);
-            responseEmbed = new EmbedBuilder()
-                .setDescription(`**STATUS:** Sippin' on oil ~bzzt~`)
+            // Create an array of drinks and pick one at random from 3 choices using buttons
+            const drinkSelection = commandFunctions.getRandomDrinks(drinks, 3);
+
+            const drinkA = new ButtonBuilder()
+                .setCustomId('drinkA')
+                .setLabel(`${drinkSelection[0].name}`)
+                .setStyle(ButtonStyle.Primary)
+                .setEmoji(`${drinkSelection[0].icon}`);
+
+            const drinkB = new ButtonBuilder()
+                .setCustomId('drinkB')
+                .setLabel(`${drinkSelection[1].name}`)
+                .setStyle(ButtonStyle.Primary)
+                .setEmoji(`${drinkSelection[1].icon}`);
+
+            const drinkC = new ButtonBuilder()
+                .setCustomId('drinkC')
+                .setLabel(`${drinkSelection[2].name}`)
+                .setStyle(ButtonStyle.Primary)
+                .setEmoji(`${drinkSelection[2].icon}`);
+
+            const buttonRow = new ActionRowBuilder()
+                .addComponents(drinkA, drinkB, drinkC);
+
+            // Select drink prompt
+            let initialImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`);
+            let initialEmbed = new EmbedBuilder()
+                .setDescription(`~bzzt~ Select a drink to sip:`)
                 .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
 
-            botReply = await message.channel.send({ 
-                embeds: [responseEmbed], 
-                files: [responseImage]
+            const responseMessage = await message.channel.send({
+                embeds: [initialEmbed], 
+                files: [initialImage], 
+                components: [buttonRow],
             });
 
-            setTimeout(async () => { 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.PENSIVE}.png`)
-                responseEmbed.setDescription('\\*sips\\*')
-                    .setThumbnail(`attachment://${mugshots.mugshotOptions.PENSIVE}.png`);
-                await botReply.edit({ 
-                    embeds: [responseEmbed], 
-                    files: [responseImage]
-                });
-            }, 3000);
+            const collector = responseMessage.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 15000, // 15 seconds to choose
+            });
 
-            // TO-DO: Add different reactions/responses to each drink case
+            collector.on('collect', async (interaction) => {
+                if (interaction.user.id !== message.author.id) {
+                    initialImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.RELIEVED}.png`);
+                    initialEmbed.setDescription(`~bzzt~ Try using the **!sip** command yourself to interact!`)
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.RELIEVED}.png`);
 
-            setTimeout(async () => { 
-                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`)
-                responseEmbed.setDescription('**STATUS:** Just sipped ~bzzt~')
-                    .setThumbnail(`attachment://${mugshots.mugshotOptions.HAPPY}.png`);
-                await botReply.edit({ 
+                    await interaction.reply({ 
+                        embeds: [initialEmbed], 
+                        files: [initialImage], 
+                        ephemeral: true 
+                    });
+                    return;
+                }
+
+                let selectedDrink;
+                if (interaction.customId === 'drinkA') {
+                    selectedDrink = drinkSelection[0];
+                }
+                else if (interaction.customId === 'drinkB') {
+                    selectedDrink = drinkSelection[1];
+                }
+                else if (interaction.customId === 'drinkC') { 
+                    selectedDrink = drinkSelection[2];
+                }
+
+                // Respond immediately to acknowledge interaction
+                await interaction.deferUpdate();
+
+                // Edit the original message instead of update again on interaction
+                const channelMessage = await interaction.message;
+
+                // Initial response
+                let responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`);
+                let responseEmbed = new EmbedBuilder()
+                    .setDescription(`**STATUS:** Sippin' on ${selectedDrink.name} ~bzzt~`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
+
+                await channelMessage.edit({ 
                     embeds: [responseEmbed], 
-                    files: [responseImage]
+                    files: [responseImage], 
+                    components: [] 
                 });
-            }, 6000);
+
+                setTimeout(async () => {
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.PENSIVE}.png`);
+                    responseEmbed.setDescription('\\*sips\\*')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.PENSIVE}.png`);
+
+                    await channelMessage.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage], 
+                        components: [] 
+                    });
+                }, 2000);
+
+                setTimeout(async () => {
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${selectedDrink.reactionMugshot}.png`);
+                    responseEmbed.setDescription(selectedDrink.reactionMessage)
+                        .setThumbnail(`attachment://${selectedDrink.reactionMugshot}.png`);
+
+                    await channelMessage.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage], 
+                        components: [] 
+                    });
+                }, 5000);
+
+                collector.stop();
+            });
+
+            collector.on('end', collected => {
+                if (collected.size === 0) {
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.STUNNED}.png`);
+                    responseEmbed.setDescription('No drink selected. Try again later! ~bzzt~')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.STUNNED}.png`);
+                    
+                    responseMessage.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage], 
+                        components: [] 
+                    });
+                }
+            });
 
             break;
         case userMessage.startsWith('!leet'):
@@ -535,6 +630,10 @@ client.on('messageCreate', async (message) => {
     //#endregion
 });
 //#endregion
+
+client.on('interactionCreate', async (interaction) => {
+
+});
 
 // Logs the bot into Discord using the token stored in the environment variables file.
 // The token is a secret key that authenticates a bot, allowing it to connect and interact with the Discord API.
