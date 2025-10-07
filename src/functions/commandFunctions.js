@@ -40,9 +40,13 @@ function textToBinary(text) {
 }
 
 function binaryToText(binary) {
-  const text = binary.split(' ').map(bin => {
-    return String.fromCharCode(parseInt(bin, 2));
-  }).join('');
+  // Check only 0,1 and spaces
+  if (!/^[01\s]+$/.test(binary)) {
+    return null;
+  }
+
+  // Proceed with conversion
+  const text = binary.split(' ').map(bin => String.fromCharCode(parseInt(bin, 2))).join('');
 
   return text;
 }

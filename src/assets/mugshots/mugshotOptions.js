@@ -14,7 +14,8 @@ const mugshotOptions = Object.freeze({
     SHOUTING: 'shouting',     /* 12 */
     STUNNED: 'stunned',       /* 13 */
     SURPRISED: 'surprised',   /* 14 */
-    TINKERING: 'tinkering'    /* 15 */
+    TINKERING: 'tinkering',   /* 15 */
+    NULL: 'null'              /* 16 */
 });
 
 const greetingMugshots = [

@@ -13,6 +13,8 @@ const botAppreciationTriggers = [
     'brilliant bot',
     'marvelous bot',
     'op bot',
+    'epic bot',
+    'sweet bot',
     'love you'
 ];
 

@@ -42,7 +42,7 @@ client.on('messageCreate', (message) => {
                 message.react('❤️');
                 responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.EMOTIONAL}.png`);
                 responseEmbed = new EmbedBuilder()
-                    .setDescription(`Thank you! \\*blushes\\*`)
+                    .setDescription(`Thank you! \\*blushes\\* \n\n STATUS: Feeling electric ~bzzt~`)
                     .setThumbnail(`attachment://${mugshots.mugshotOptions.EMOTIONAL}.png`);
 
                 message.reply({ 
@@ -115,7 +115,7 @@ client.on('messageCreate', async (message) => {
 
                 setTimeout(async () => {
                     responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.ANGRY}.png`)
-                    responseEmbed.setDescription('Get ready to get rekt')
+                    responseEmbed.setDescription('Get ready to get rekt!')
                         .setThumbnail(`attachment://${mugshots.mugshotOptions.ANGRY}.png`);
                     await botReply.edit({ 
                         embeds: [responseEmbed], 
@@ -185,7 +185,7 @@ client.on('messageCreate', async (message) => {
 
                 setTimeout(async () => { 
                     responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.SHOUTING}.png`)
-                    responseEmbed.setDescription('POKEPOGGERS! <a:pokepoggersMAX:953631233076785152>')
+                    responseEmbed.setDescription('POKEPOGGERS! STATUS: <a:pokepoggersMAX:953631233076785152>')
                         .setThumbnail(`attachment://${mugshots.mugshotOptions.SHOUTING}.png`);
                     await botReply.edit({ 
                         embeds: [responseEmbed], 
@@ -197,6 +197,34 @@ client.on('messageCreate', async (message) => {
             case replyFunctions.containsRickRoll(userMessage):
                 message.react('<a:rickrollgif:1424886267673448448>');
                 botreply = await message.reply('https://media.tenor.com/o656qFKDzeUAAAAM/rick-astley-never-gonna-give-you-up.gif');
+
+                break;
+            case userMessage == 'null':
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.NULL}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`The end is nigh. The end is null.`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.NULL}.png`);
+
+                botReply = await message.reply({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+
+                setTimeout(async () => { 
+                    await message.delete();
+                    await botReply.delete();
+                }, 1000);
+
+                setTimeout(async () => { 
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.SURPRISED}.png`)
+                    responseEmbed.setDescription('~bzzt~ WhAt iN tHe NuTs aNd BoLtS waS tHat!? \n\n STATUS: Spooked 😭')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.SURPRISED}.png`);
+                    
+                    await message.channel.send({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 3000);
 
                 break;
             default:
@@ -327,6 +355,178 @@ client.on('messageCreate', async (message) => {
                     files: [responseImage]
                 });
             }, 5000);
+
+            break;
+        case userMessage.startsWith('!binary'):
+            const prefix = '!binary';
+            const subcommand = userMessage.slice(prefix.length).trim().split(/ +/)[0]; // Getting only the subcommand
+            let isError = false;
+            let response = '';
+
+            // Ensure an option is selected between encode or decode
+            if (!subcommand) {
+                isError = true;
+                response = `Beep boop bop... please specify **encode** or **decode**. \n\n Example: !binary encode [your message] \n\n **STATUS**: Reconnecting... ~bzzt~`;
+            }
+
+            // Check to ensure subcommand is either encode or decode
+            if (subcommand != 'encode' && subcommand != 'decode') {
+                isError = true;
+                response = `Oh no... Invalid option. Use **encode** to convert text to binary or **decode** to convert binary to text. \n\n Example: !binary encode [your message] \n\n **STATUS**: Unable to operate ~bzzt~`;
+            }
+
+            // Check for empty input
+            if (!helperFunctions.hasInputAfterCommand(userMessage, `${prefix} encode`) || !helperFunctions.hasInputAfterCommand(userMessage, `${prefix} decode`)) {
+                isError = true;
+                response = `404 moment... Please provide a message to encode/decode. \n\n Example: !binary decode [your message] \n\n **STATUS**: Not found ~bzzt~`;
+            }
+
+            if (isError) {
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DIZZY}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(response)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.DIZZY}.png`);
+
+                botReply = await message.channel.send({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+
+                break;
+            }
+
+            // Check for trigger keywords
+            if (incidentTriggers.containsTrigger(userMessage)) {
+                message.react('❌');
+
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`Perhaps not ~bzzt~`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.HAPPY}.png`);
+
+                botReply = await message.channel.send({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+
+                break;
+            }
+
+            if (userMessage.startsWith(`${prefix} encode `)) {
+                const text = userMessage.slice((prefix + ' encode ').length);
+                const binary = commandFunctions.textToBinary(text);
+
+                // Approve message for translation
+                message.react('✅');
+
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`On it!`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.HAPPY}.png`);
+
+                botReply = await message.channel.send({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+
+                setTimeout(async () => { 
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.TINKERING}.png`)
+                    responseEmbed.setDescription('Encoding...')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.TINKERING}.png`);
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 2000);
+
+                if (replyFunctions.containsRickRoll(userMessage)) {
+                    setTimeout(async () => { 
+                        await botReply.edit({
+                            content: 'https://media.tenor.com/o656qFKDzeUAAAAM/rick-astley-never-gonna-give-you-up.gif', 
+                            embeds: [], 
+                            files: []
+                        }); 
+                    }, 5000);
+
+                    break;
+                }
+
+                setTimeout(async () => { 
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`)
+                    responseEmbed.setDescription(`Here is your message encoded in binary: \n\n ${binary}`)
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
+
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 5000);
+            }
+
+            if (userMessage.startsWith(`${prefix} decode `)) {
+                const binary = userMessage.slice((prefix + ' decode ').length);
+                const result = commandFunctions.binaryToText(binary);
+
+                if (!result) {
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.SAD}.png`);
+                    responseEmbed = new EmbedBuilder()
+                        .setDescription(`STATUS: Decoding failed. Try using a valid input. ~bzzt~`)
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.SAD}.png`);
+
+                    botReply = await message.channel.send({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+
+                    break;
+                }
+
+                // Approve message for translation
+                message.react('✅');
+
+                responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.HAPPY}.png`);
+                responseEmbed = new EmbedBuilder()
+                    .setDescription(`Right away!`)
+                    .setThumbnail(`attachment://${mugshots.mugshotOptions.HAPPY}.png`);
+
+                botReply = await message.channel.send({ 
+                    embeds: [responseEmbed], 
+                    files: [responseImage]
+                });
+
+                setTimeout(async () => { 
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.TINKERING}.png`)
+                    responseEmbed.setDescription('Decoding...')
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.TINKERING}.png`);
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 2000);
+
+                if (replyFunctions.containsRickRoll(result)) {
+                    setTimeout(async () => { 
+                        await botReply.edit({
+                            content: 'https://media.tenor.com/o656qFKDzeUAAAAM/rick-astley-never-gonna-give-you-up.gif', 
+                            embeds: [], 
+                            files: []
+                        }); 
+                    }, 5000);
+
+                    break;
+                }
+
+                setTimeout(async () => { 
+                    responseImage = new AttachmentBuilder(`src/assets/mugshots/${mugshots.mugshotOptions.DEFAULT}.png`)
+                    responseEmbed.setDescription(`Here is your dedcoded message: \n\n ${result}`)
+                        .setThumbnail(`attachment://${mugshots.mugshotOptions.DEFAULT}.png`);
+
+                    await botReply.edit({ 
+                        embeds: [responseEmbed], 
+                        files: [responseImage]
+                    });
+                }, 5000);
+            }
 
             break;
         default:
