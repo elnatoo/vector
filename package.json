@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/elnatoo/vector#readme",
   "dependencies": {
-    "discord.js": "^14.22.1",
+    "discord.js": "^14.27.0",
     "dotenv": "^17.2.2"
   }
 }
